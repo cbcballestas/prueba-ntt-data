@@ -1,10 +1,13 @@
 package com.nttdata.apirest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nttdata.apirest.util.ConverterUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Data
@@ -15,18 +18,26 @@ public class AfiliadoDTO {
     private Long id;
 
     @JsonProperty("tipo_identificacion")
+    @Size(max = 3, message = "Tipo de identificación DEBE ser máximo de 3 caracteres")
+    @NotEmpty(message = "Tipo de identificación es obligatorio")
     private String tipoIdentificacion;
 
     @JsonProperty("numero_identificacion")
+    @Size(max = 20, message = "Número de identificación DEBE ser máximo de 20 caracteres")
+    @NotEmpty(message = "Número de identificación es obligatorio")
     private String numeroIdentificacion;
 
     @JsonProperty("primer_nombre")
+    @Size(max = 20, message = "Primer nombre DEBE ser máximo de 20 caracteres")
+    @NotEmpty(message = "Primer nombre es obligatorio")
     private String primerNombre;
 
     @JsonProperty("segundo_nombre")
     private String segundoNombre;
 
     @JsonProperty("primer_apellido")
+    @Size(max = 20, message = "Primer apellido DEBE ser máximo de 20 caracteres")
+    @NotEmpty(message = "Primer apellido es obligatorio")
     private String primerApellido;
 
     @JsonProperty("segundo_apellido")
@@ -44,7 +55,7 @@ public class AfiliadoDTO {
     @JsonProperty("fecha_creacion")
     private String fechaCreacion;
 
-    @JsonProperty("USUARIO_ULTIMA_MODIFICACION")
+    @JsonProperty("usuario_ultima_modificacion")
     private String usuarioUltimaModificacion;
 
     @JsonProperty("fecha_ultima_modificacion")
@@ -54,5 +65,5 @@ public class AfiliadoDTO {
     private Integer numeroCuenta;
 
     @JsonProperty("estado_cuenta")
-    private Date estadoCuenta;
+    private String estadoCuenta;
 }

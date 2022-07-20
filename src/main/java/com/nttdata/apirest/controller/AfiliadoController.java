@@ -22,6 +22,12 @@ public class AfiliadoController {
         return afiliadoService.obtenerAfiliados();
     }
 
+    @GetMapping(params = {"identificacion"})
+    public ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorNumeroIdentificacion(
+            @RequestParam(name = "identificacion") String numeroIdentificacion) {
+        return afiliadoService.obtenerAfiliadoPorNumeroIdentificacion(numeroIdentificacion);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerPorId(@PathVariable("id") Long idAfiliado) {
         return afiliadoService.obtenerAfiliadoPorId(idAfiliado);

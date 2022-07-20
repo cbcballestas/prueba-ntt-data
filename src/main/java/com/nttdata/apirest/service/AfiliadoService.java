@@ -11,6 +11,8 @@ public interface AfiliadoService {
 
     ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorId(Long afiliadoId);
 
+    ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorNumeroIdentificacion(String numeroIdentificacion);
+
     ResponseEntity<JsonResponse<AfiliadoDTO>> registrarAfiliado(AfiliadoDTO afiliadoDTO);
 
     ResponseEntity<JsonResponse<AfiliadoDTO>> actualizarAfiliado(Long afiliadoId, AfiliadoDTO afiliadoDTO);
