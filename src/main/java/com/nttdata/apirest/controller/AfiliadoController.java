@@ -1,14 +1,18 @@
 package com.nttdata.apirest.controller;
 
 import com.nttdata.apirest.dto.AfiliadoDTO;
+import com.nttdata.apirest.exception.GlobalException;
 import com.nttdata.apirest.service.AfiliadoService;
 import com.nttdata.apirest.util.JsonResponse;
+import com.nttdata.apirest.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/afiliados")
@@ -22,10 +26,11 @@ public class AfiliadoController {
         return afiliadoService.obtenerAfiliados();
     }
 
-    @GetMapping(params = {"identificacion"})
-    public ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorNumeroIdentificacion(
-            @RequestParam(name = "identificacion") String numeroIdentificacion) {
-        return afiliadoService.obtenerAfiliadoPorNumeroIdentificacion(numeroIdentificacion);
+    @GetMapping("/buscar")
+    public ResponseEntity<JsonResponse<?>> buscarDatos(
+            @RequestParam(name = "identificacion", required = false) String numeroIdentificacion,
+            @RequestParam(name = "fecha_creacion", required = false) String fechaCreacion) {
+        return afiliadoService.buscarDatos(fechaCreacion, numeroIdentificacion);
     }
 
     @GetMapping("/{id}")

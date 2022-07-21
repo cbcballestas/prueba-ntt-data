@@ -11,8 +11,11 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -29,18 +32,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(GlobalException.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(GlobalException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(error, ex.getStatus());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        Map<String, String> errores = new HashMap<>();
+        List<String> errores = new ArrayList<>();
 
         // Se recorren errores obtenidos
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String campo = ((FieldError) error).getField();
-            String mensaje = error.getDefaultMessage();
+        errores = ex.getBindingResult().getAllErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
 
-            errores.put(campo, mensaje);
-        });
-
-        return super.handleMethodArgumentNotValid(ex, headers, status, request);
+        return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
     }
 }

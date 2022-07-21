@@ -1,14 +1,13 @@
 package com.nttdata.apirest.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nttdata.apirest.util.ConverterUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -52,14 +51,8 @@ public class AfiliadoDTO {
     @JsonProperty("usuario_creacion")
     private String usuarioCreacion;
 
-    @JsonProperty("fecha_creacion")
-    private String fechaCreacion;
-
     @JsonProperty("usuario_ultima_modificacion")
     private String usuarioUltimaModificacion;
-
-    @JsonProperty("fecha_ultima_modificacion")
-    private String fechaUltimaModificacion;
 
     @JsonProperty("numero_cuenta")
     private Integer numeroCuenta;

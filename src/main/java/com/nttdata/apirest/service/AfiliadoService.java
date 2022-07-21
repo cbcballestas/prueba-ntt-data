@@ -9,9 +9,9 @@ import java.util.List;
 public interface AfiliadoService {
     ResponseEntity<JsonResponse<List<AfiliadoDTO>>> obtenerAfiliados();
 
-    ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorId(Long afiliadoId);
+    ResponseEntity<JsonResponse<?>> buscarDatos(String fechaCreacion, String numeroIdentificacion);
 
-    ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorNumeroIdentificacion(String numeroIdentificacion);
+    ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorId(Long afiliadoId);
 
     ResponseEntity<JsonResponse<AfiliadoDTO>> registrarAfiliado(AfiliadoDTO afiliadoDTO);
 

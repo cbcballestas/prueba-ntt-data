@@ -1,6 +1,7 @@
 package com.nttdata.apirest.impl;
 
 import com.nttdata.apirest.dto.AfiliadoDTO;
+import com.nttdata.apirest.exception.GlobalException;
 import com.nttdata.apirest.exception.ResourceNotFoundException;
 import com.nttdata.apirest.model.Afiliado;
 import com.nttdata.apirest.repository.AfiliadoRepository;
@@ -8,6 +9,7 @@ import com.nttdata.apirest.service.AfiliadoService;
 import com.nttdata.apirest.util.ConstantsUtil;
 import com.nttdata.apirest.util.ConverterUtil;
 import com.nttdata.apirest.util.JsonResponse;
+import com.nttdata.apirest.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +48,30 @@ public class AfiliadoServiceImpl implements AfiliadoService {
         ), HttpStatus.OK);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<JsonResponse<?>> buscarDatos(String fechaCreacion, String numeroIdentificacion) {
+        if (Util.isNullOrEmpty(numeroIdentificacion) && Util.isNullOrEmpty(fechaCreacion)) {
+            throw new GlobalException(
+                    "Debe realizar la búsqueda ingresando alguno de los parámetros (fecha_creacion, identificacion)",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (numeroIdentificacion != null && fechaCreacion != null) {
+            throw new GlobalException(
+                    "Solo puede realizar la búsqueda por uno de los siguientes parámetros (fecha_creacion, identificacion)",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (numeroIdentificacion != null) {
+            return obtenerAfiliadoPorNumeroIdentificacion(numeroIdentificacion);
+        }
+
+        return obtenerAfiliadosPorFechaCreacion(fechaCreacion);
+    }
+
     /**
      * Método que se encarga de buscar un afiliado por ID
      *
@@ -58,24 +84,6 @@ public class AfiliadoServiceImpl implements AfiliadoService {
 
         Afiliado afiliado = afiliadoRepository.findById(afiliadoId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Registro con ID %d NO ha sido encontrado", afiliadoId)));
-
-        return new ResponseEntity<>(new JsonResponse<AfiliadoDTO>(
-                utilKeys.SUCCESS_STATUS,
-                utilKeys.SUCCESS_MESSAGE,
-                utilConverter.mapToAfiliadoDTO(afiliado)
-        ), HttpStatus.OK);
-    }
-
-    /**
-     * Método que se encarga de realizar la búsqueda de un afiliado por número identificación
-     *
-     * @param numeroIdentificacion Número identificación
-     * @return Afiliado
-     */
-    @Override
-    public ResponseEntity<JsonResponse<AfiliadoDTO>> obtenerAfiliadoPorNumeroIdentificacion(String numeroIdentificacion) {
-        Afiliado afiliado = afiliadoRepository.findByNumeroIdentificacion(numeroIdentificacion)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("NO se ha encontrado afiliado con identificación: %s.", numeroIdentificacion)));
 
         return new ResponseEntity<>(new JsonResponse<AfiliadoDTO>(
                 utilKeys.SUCCESS_STATUS,
@@ -153,5 +161,41 @@ public class AfiliadoServiceImpl implements AfiliadoService {
         afiliadoRepository.delete(afiliado);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Método que se encarga de obtener los empleados creados para una fecha específica
+     *
+     * @param fecha Fecha a consultar
+     * @return Lista de afiliados
+     */
+    private ResponseEntity<JsonResponse<?>> obtenerAfiliadosPorFechaCreacion(String fecha) {
+        List<AfiliadoDTO> afiliados = afiliadoRepository.getAfiliadosByFechaCreacion(fecha)
+                .stream()
+                .map(utilConverter::mapToAfiliadoDTO)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(new JsonResponse<List<AfiliadoDTO>>(
+                utilKeys.SUCCESS_STATUS,
+                utilKeys.SUCCESS_MESSAGE,
+                afiliados
+        ), HttpStatus.OK);
+    }
+
+    /**
+     * Método que se encarga de realizar la búsqueda de un afiliado por número identificación
+     *
+     * @param numeroIdentificacion Número identificación
+     * @return Afiliado
+     */
+    private ResponseEntity<JsonResponse<?>> obtenerAfiliadoPorNumeroIdentificacion(String numeroIdentificacion) {
+        Afiliado afiliado = afiliadoRepository.findByNumeroIdentificacion(numeroIdentificacion)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("NO se ha encontrado afiliado con identificación: %s.", numeroIdentificacion)));
+
+        return new ResponseEntity<>(new JsonResponse<AfiliadoDTO>(
+                utilKeys.SUCCESS_STATUS,
+                utilKeys.SUCCESS_MESSAGE,
+                utilConverter.mapToAfiliadoDTO(afiliado)
+        ), HttpStatus.OK);
     }
 }
