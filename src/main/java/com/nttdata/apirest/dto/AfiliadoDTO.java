@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -51,8 +52,14 @@ public class AfiliadoDTO {
     @JsonProperty("usuario_creacion")
     private String usuarioCreacion;
 
+    @JsonProperty("fecha_creacion")
+    private String fechaCreacion;
+
     @JsonProperty("usuario_ultima_modificacion")
     private String usuarioUltimaModificacion;
+
+    @Column(name = "fechaUltimaModificacion")
+    private String fechaUltimaModificacion;
 
     @JsonProperty("numero_cuenta")
     private Integer numeroCuenta;
