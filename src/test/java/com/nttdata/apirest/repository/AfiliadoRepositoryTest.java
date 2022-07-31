@@ -46,7 +46,7 @@ class AfiliadoRepositoryTest {
     @Test
     @DisplayName("TEST que verifica la búsqueda de un afiliado por número de identificación que no existe")
     void testFindByNumeroIdentificacion_WhenNumeroIdentificacionDoesNotExist() {
-        Optional<Afiliado> afiliado = afiliadoRepository.findByNumeroIdentificacion(Datos.NUMERO_IDENTIFICACION);
+        Optional<Afiliado> afiliado = afiliadoRepository.findByNumeroIdentificacion(Datos.NUMERO_IDENTIFICACION_INCORRECTO);
         assumeFalse(afiliado.isPresent());
     }
 }
